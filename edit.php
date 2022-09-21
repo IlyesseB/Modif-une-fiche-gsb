@@ -2,10 +2,12 @@
 session_start();
 
 if($_POST){
-    if(isset($_POST['id']) && !empty($_POST['id'])
-    && isset($_POST['produit']) && !empty($_POST['produit'])
-    && isset($_POST['prix']) && !empty($_POST['prix'])
-    && isset($_POST['nombre']) && !empty($_POST['nombre'])){
+    if(isset($_POST['idVisiteur']) && !empty($_POST['idVisiteur'])
+    && isset($_POST['mois']) && !empty($_POST['mois'])
+    && isset($_POST['nbJustificatifs']) && !empty($_POST['nbJustificatifs'])
+    && isset($_POST['montantValide']) && !empty($_POST['montantValide'])
+    && isset($_POST['dateModif']) && !empty($_POST['dateModif'])
+    && isset($_POST['idEtat']) && !empty($_POST['idEtat'])){
         require_once('connect.php');
 
         $id = strip_tags($_POST['id']);
