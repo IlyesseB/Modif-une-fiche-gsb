@@ -2,31 +2,23 @@
 session_start();
 
 if($_POST){
-    if(isset($_POST['idVisiteur']) && !empty($_POST['idVisiteur'])
-    && isset($_POST['mois']) && !empty($_POST['mois'])
-    && isset($_POST['nbJustificatifs']) && !empty($_POST['nbJustificatifs'])
-    && isset($_POST['montantValide']) && !empty($_POST['montantValide'])
-    && isset($_POST['dateModif']) && !empty($_POST['dateModif'])
+    if(isset($_POST['id']) && !empty($_POST['id'])
     && isset($_POST['idEtat']) && !empty($_POST['idEtat'])){
         require_once('connect.php');
 
         $id = strip_tags($_POST['id']);
-        $produit = strip_tags($_POST['produit']);
-        $prix = strip_tags($_POST['prix']);
-        $nombre = strip_tags($_POST['nombre']);
+        $idEtat = strip_tags($_POST['idEtat']);
 
-        $sql = 'UPDATE `liste` SET `produit`=:produit, `prix`=:prix, `nombre`=:nombre WHERE `id`=:id;';
+        $sql = 'UPDATE `FicheFrais` SET `idEtat`=:idEtat WHERE `id`=:id;';
 
         $query = $db->prepare($sql);
 
         $query->bindValue(':id', $id, PDO::PARAM_INT);
-        $query->bindValue(':produit', $produit, PDO::PARAM_STR);
-        $query->bindValue(':prix', $prix, PDO::PARAM_STR);
-        $query->bindValue(':nombre', $nombre, PDO::PARAM_INT);
+        $query->bindValue(':idEtat', $idEtat, PDO::PARAM_STR);
 
         $query->execute();
 
-        $_SESSION['message'] = "Produit modifié";
+        $_SESSION['message'] = "idEtat modifié";
         require_once('close.php');
 
         header('Location: index.php');
@@ -40,7 +32,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
     $id = strip_tags($_GET['id']);
 
-    $sql = 'SELECT * FROM `liste` WHERE `id` = :id;';
+    $sql = 'SELECT * FROM `FicheFrais` WHERE `id` = :id;';
 
     $query = $db->prepare($sql);
 
@@ -48,9 +40,9 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
     $query->execute();
 
-    $produit = $query->fetch();
+    $idEtat = $query->fetch();
 
-    if(!$produit){
+    if(!$idEtat){
         $_SESSION['erreur'] = "Cet id n'existe pas";
         header('Location: index.php');
     }
@@ -65,7 +57,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier un produit</title>
+    <title>Modifier un idEtat</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -81,22 +73,20 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
                         $_SESSION['erreur'] = "";
                     }
                 ?>
-                <h1>Modifier un produit</h1>
+                <h1>Modifier un idEtat</h1>
                 <form method="post">
                     <div class="form-group">
-                        <label for="produit">Produit</label>
-                        <input type="text" id="produit" name="produit" class="form-control" value="<?= $produit['produit']?>">
+                        <label for="idEtat">idEtat</label>
+                        <p>
+                            <select name="idEtat">
+                                <option value="CL">Saisie clôturée</option>
+                                <option value="CR">Fiche créée, saisie en cours</option>
+                                <option value="RB">Remboursée</option>
+                                <option value="VA">Validée et mise en paiement</option>
+                            </select>
+                        </p>
                     </div>
-                    <div class="form-group">
-                        <label for="prix">Prix</label>
-                        <input type="text" id="prix" name="prix" class="form-control" value="<?= $produit['prix']?>">
-
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre</label>
-                        <input type="number" id="nombre" name="nombre" class="form-control" value="<?= $produit['nombre']?>">
-                    </div>
-                    <input type="hidden" value="<?= $produit['id']?>" name="id">
+                    <input type="hidden" value="<?= $idEtat['id']?>" name="id">
                     <button class="btn btn-primary">Envoyer</button>
                 </form>
             </section>
