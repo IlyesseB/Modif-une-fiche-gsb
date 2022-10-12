@@ -3,7 +3,7 @@ session_start();
 
 require_once('connect.php');
 
-$sql = 'SELECT * FROM `FicheFrais`';
+$sql = 'SELECT * FROM `FicheFrais` ORDER BY `mois`';
 
 $query = $db->prepare($sql);
 
@@ -18,7 +18,7 @@ require_once('close.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des idEtat</title>
+    <title>Liste des libelle</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -42,35 +42,31 @@ require_once('close.php');
                         $_SESSION['message'] = "";
                     }
                 ?>
-                <h1>Liste des idEtat</h1>
+                <h1>Liste des libelle</h1>
                 <table class="table">
                     <thead>
-                        <th>id</th>
-                        <th>idVisiteur</th>
-                        <th>mois</th>
-                        <th>nbJustificatifs</th>
-                        <th>montantValide</th>
-                        <th>dateModif</th>
-                        <th>idEtat</th>
+                        <th>Mois</th>
+                        <th>Date modif</th>
+                        <th>Utilisateur</th>
+                        <th>ID de l'état</th>
+                        <th>Modifier l'état de la fiche</th>
                     </thead>
                     <tbody>
                         <?php
                         // On boucle sur la variable result
-                        foreach($result as $idEtat){
+                        foreach($result as $libelle){
                         ?>
                             <tr>
-                                <td><?= $idEtat['id'] ?></td>
-                                <td><?= $idEtat['idVisiteur'] ?></td>
-                                <td><?= $idEtat['mois'] ?></td>
-                                <td><?= $idEtat['nbJustificatifs'] ?></td>
-                                <td><?= $idEtat['montantValide'] ?></td>
-                                <td><?= $idEtat['dateModif'] ?></td>
-                                <td><?= $idEtat['idEtat'] ?></td>
-                                <td><a href="details.php?id=<?= $idEtat['id'] ?>">Voir</a> <a href="edit.php?id=<?= $idEtat['id'] ?>">Modifier</a></td>
-                            </tr>
+                                <td><?= $libelle['mois'] ?></td>
+                                <td><?= $libelle['dateModif'] ?></td>
+                                <td><?= $libelle['idVisiteur'] ?></td>
+                                <td><?= $libelle['idEtat'] ?></td>
+                                <td><a href="edit.php?visiteur=<?= $libelle['idVisiteur'] ?>&mois=<?= $libelle['mois'] ?>">Modifier</a></td>
+                                
                         <?php
                         }
                         ?>
+                        
                     </tbody>
                 </table>
             </section>

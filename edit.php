@@ -2,54 +2,53 @@
 session_start();
 
 if($_POST){
-    if(isset($_POST['id']) && !empty($_POST['id'])
-    && isset($_POST['idEtat']) && !empty($_POST['idEtat'])){
+    if(isset($_POST['id']) && !empty($_POST['id'])){
         require_once('connect.php');
-
+        var_dump ($_GET);
+        var_dump ($_POST);
         $id = strip_tags($_POST['id']);
-        $idEtat = strip_tags($_POST['idEtat']);
+        $visiteur = strip_tags($_GET['visiteur']);
+        $mois = strip_tags($_GET['mois']);
 
-        $sql = 'UPDATE `FicheFrais` SET `idEtat`=:idEtat WHERE `id`=:id;';
+
+        $sql = 'UPDATE `FicheFrais` SET `idEtat`=:id WHERE `idVisiteur`=:visiteur AND `mois`=:mois; ';
 
         $query = $db->prepare($sql);
 
-        $query->bindValue(':id', $id, PDO::PARAM_INT);
-        $query->bindValue(':idEtat', $idEtat, PDO::PARAM_STR);
+        $query->bindValue(':id', $id,  PDO::PARAM_STR);
+        $query->bindValue(':visiteur', $visiteur,  PDO::PARAM_STR);
+        $query->bindValue(':mois', $mois,  PDO::PARAM_STR);
 
         $query->execute();
 
-        $_SESSION['message'] = "idEtat modifié";
+        $_SESSION['message'] = "libelle modifié";
         require_once('close.php');
-
         header('Location: index.php');
+        
+    }
+} else { 
+
+    if(isset($_GET['visiteur']) && !empty($_GET['visiteur']) && isset($_GET['mois']) && !empty($_GET['mois'])){
+        require_once('connect.php');
+    
+        $visiteur = strip_tags($_GET['visiteur']);
+        $mois = strip_tags($_GET['mois']);
+    
+        $sql = 'SELECT * FROM `Etat`';
+    
+        $query = $db->prepare($sql);
+    
+        $query->execute();
+    
+        $libelle = $query->fetchAll();
+    
     }else{
-        $_SESSION['erreur'] = "Le formulaire est incomplet";
-    }
-}
-
-if(isset($_GET['id']) && !empty($_GET['id'])){
-    require_once('connect.php');
-
-    $id = strip_tags($_GET['id']);
-
-    $sql = 'SELECT * FROM `FicheFrais` WHERE `id` = :id;';
-
-    $query = $db->prepare($sql);
-
-    $query->bindValue(':id', $id, PDO::PARAM_INT);
-
-    $query->execute();
-
-    $idEtat = $query->fetch();
-
-    if(!$idEtat){
-        $_SESSION['erreur'] = "Cet id n'existe pas";
+        $_SESSION['erreur'] = "URL invalide";
         header('Location: index.php');
     }
-}else{
-    $_SESSION['erreur'] = "URL invalide";
-    header('Location: index.php');
+
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -57,7 +56,7 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier un idEtat</title>
+    <title>Modifier un libelle</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
@@ -73,21 +72,23 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
                         $_SESSION['erreur'] = "";
                     }
                 ?>
-                <h1>Modifier un idEtat</h1>
+                <h1>Modifier un libelle</h1>
                 <form method="post">
+                    
+                    
                     <div class="form-group">
-                        <label for="idEtat">idEtat</label>
-                        <p>
-                            <select name="idEtat">
-                                <option value="CL">Saisie clôturée</option>
-                                <option value="CR">Fiche créée, saisie en cours</option>
-                                <option value="RB">Remboursée</option>
-                                <option value="VA">Validée et mise en paiement</option>
-                            </select>
-                        </p>
+                        <label for="etat">etat</label><br>
+                        <select name="id">
+                            <?php 
+                            foreach ($libelle as $libbb) { ?>
+                            <option value="<?= $libbb['id'] ?>"><?= $libbb['libelle'] ?></option>
+
+                            <?php
+                            }
+                            ?>
+                        </select>
                     </div>
-                    <input type="hidden" value="<?= $idEtat['id']?>" name="id">
-                    <button class="btn btn-primary">Envoyer</button>
+                    <input type ="submit"></input>
                 </form>
             </section>
         </div>

@@ -6,17 +6,17 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 
     $id = strip_tags($_GET['id']);
 
-    $sql = 'SELECT * FROM `FicheFrais` WHERE `id` = :id;';
+    $sql = 'SELECT * FROM `Etat` WHERE `id` = :id;';
 
     $query = $db->prepare($sql);
 
-    $query->bindValue(':id', $id, PDO::PARAM_INT);
+    $query->bindValue(':id', $id, PDO::PARAM_STR);
 
     $query->execute();
 
-    $idEtat = $query->fetch();
+    $libelle = $query->fetch();
 
-    if(!$idEtat){
+    if(!$libelle){
         $_SESSION['erreur'] = "Cet id n'existe pas";
         header('Location: index.php');
     }
@@ -30,17 +30,17 @@ if(isset($_GET['id']) && !empty($_GET['id'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails du idEtat</title>
+    <title>Détails du libelle</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
     <main class="container">
         <div class="row">
             <section class="col-12">
-                <h1>Détails du idEtat <?= $idEtat['idEtat'] ?></h1>
-                <p>ID : <?= $idEtat['id'] ?></p>
-                <p>idEtat : <?= $idEtat['idEtat'] ?></p>
-                <p><a href="index.php">Retour</a> <a href="edit.php?id=<?= $idEtat['id'] ?>">Modifier</a></p>
+                <h1>Détails du libelle <?= $libelle['libelle'] ?></h1>
+                <p>ID : <?= $libelle['id'] ?></p>
+                <p>libelle : <?= $libelle['libelle'] ?></p>
+                <p><a href="index.php">Retour</a> <a href="edit.php?id=<?= $libelle['id'] ?>">Modifier</a></p>
             </section>
         </div>
     </main>
